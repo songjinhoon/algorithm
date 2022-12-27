@@ -12,7 +12,7 @@ public class BackjoonApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(BackjoonApplication.class, args);
-        quest10952();
+        quest1110();
     }
 
     private static void quest1000() {
@@ -44,7 +44,7 @@ public class BackjoonApplication {
 
     }
 
-    public static void quest10952() {
+    private static void quest10952() {
         boolean running = true;
 
         while (running) {
@@ -60,6 +60,45 @@ public class BackjoonApplication {
             }
 
         }
+    }
+
+    private static void quest1110() {
+        Scanner scanner = new Scanner(System.in);
+        int originalData = scanner.nextInt();
+        int data = originalData;
+        boolean running = true;
+        int cycle = 1;
+
+        while (running) {
+            int x, y;
+            String z = "";
+            int result;
+
+            if (data < 10) {
+                x = 0;
+                y = data;
+                z = 0 + data + "";
+                result = data;
+            } else {
+                x = Integer.parseInt((data + "").substring(0, 1));
+                y = Integer.parseInt((data + "").substring(1));
+                if ( x+y < 10) {
+                    z = "0" + (x + y);
+                } else {
+                    z = (x + y) + "";
+                }
+                result = Integer.parseInt("" + y + Integer.parseInt(z.substring(1)));
+            }
+            if (result ==  originalData) {
+                running = false;
+            } else {
+                data = result;
+                cycle++;
+            }
+        }
+
+        System.out.println(cycle);
+
     }
 
 }
