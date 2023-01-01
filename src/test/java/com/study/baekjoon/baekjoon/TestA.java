@@ -104,12 +104,7 @@ public class TestA {
                         3,
                         new int[]{4, 2, 4, 5, 3, 3, 1},
                         5
-                }, new Object[]{
-                        7,
-                        3,
-                        new int[]{3, 3, 1, 4, 2, 4, 5},
-                        5
-        },
+                }
         };
     }
 

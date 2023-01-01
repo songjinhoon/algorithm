@@ -8,10 +8,10 @@ import java.util.List;
 import java.util.Scanner;
 
 @SpringBootApplication
-public class BackjoonApplication {
+public class CodingTestApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(BackjoonApplication.class, args);
+        SpringApplication.run(CodingTestApplication.class, args);
         quest1110();
     }
 
