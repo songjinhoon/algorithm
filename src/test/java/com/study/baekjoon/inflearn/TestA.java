@@ -54,4 +54,32 @@ public class TestA {
         };
     }
 
+    @DisplayName("문자열 대소문자 치환")
+    @MethodSource("paramForTest002")
+    @ParameterizedTest
+    void test002(String message, String result) {
+        //given
+        StringBuilder stringBuilder = new StringBuilder();
+
+        //when
+        char[] chars = message.toCharArray();
+
+        for (char unit : chars) {
+            if (Character.isUpperCase(unit)) {
+                stringBuilder.append(Character.toLowerCase(unit));
+            } else {
+                stringBuilder.append(Character.toUpperCase(unit));
+            }
+        }
+
+        //then
+        assertThat(stringBuilder.toString()).isEqualTo(result);
+    }
+
+    public static Object[] paramForTest002() {
+        return new Object[]{
+                new Object[]{"STudY", "stUDy"}
+        };
+    }
+
 }
