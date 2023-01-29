@@ -1,11 +1,14 @@
 package com.study.baekjoon.inflearn;
 
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -129,6 +132,54 @@ public class TestA {
 
         //then
         assertThat(result).isEqualTo(expect);
+    }
+
+    @Test
+    @DisplayName("단어 뒤집기-StringBuilder")
+    void test04_1() {
+        //given
+        List<String> messages = List.of("good", "Time", "Big");
+        List<String> expect = List.of("doog", "emiT", "giB");
+        List<String> result = new ArrayList<>();
+
+        //when
+        messages.forEach(message -> {
+            String reverse = new StringBuilder(message).reverse().toString();
+            result.add(reverse);
+        });
+
+        //then
+        for (int i = 0; i < result.size(); i++) {
+            assertThat(result.get(i)).isEqualTo(expect.get(i));
+        }
+    }
+
+    @Test
+    @DisplayName("단어 뒤집기-배열인덱스 활용")
+    void test04_2() {
+        //given
+        List<String> messages = List.of("good", "Time", "Big");
+        List<String> expect = List.of("doog", "emiT", "giB");
+        List<String> result = new ArrayList<>();
+
+        //when
+        messages.forEach(message -> {
+            char[] chars = message.toCharArray();
+            int lt = 0, rt = chars.length - 1;
+            while (lt < rt) {
+                char temp = chars[lt];
+                chars[lt] = chars[rt];
+                chars[rt] = temp;
+                lt++;
+                rt--;
+            }
+            result.add(String.valueOf(chars));
+        });
+
+        //then
+        for (int i = 0; i < result.size(); i++) {
+            assertThat(result.get(i)).isEqualTo(expect.get(i));
+        }
     }
 
 }
