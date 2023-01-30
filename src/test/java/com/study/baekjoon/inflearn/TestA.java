@@ -182,4 +182,35 @@ public class TestA {
         }
     }
 
+    @Test
+    @DisplayName("특정 문자 뒤집기 - 특수문자 아닌거 뒤집기")
+    void test05() {
+        //given
+        String message = "a#b!GE*T@S";
+        String expect = "S#T!EG*b@a";
+        String result = "";
+
+        //when
+        char[] messageArray = message.toCharArray();
+        int lt = 0, rt = message.length() - 1;
+        while (lt < rt) {
+            if (!Character.isAlphabetic(messageArray[lt])) {
+                lt++;
+            } else if (!Character.isAlphabetic(messageArray[rt])) {
+                rt--;
+            } else {
+                char temp = messageArray[lt];
+                messageArray[lt] = messageArray[rt];
+                messageArray[rt] = temp;
+                lt++;
+                rt--;
+            }
+        }
+        result = String.valueOf(messageArray);
+
+        //then
+        assertThat(result).isEqualTo(expect);
+    }
+
+
 }
