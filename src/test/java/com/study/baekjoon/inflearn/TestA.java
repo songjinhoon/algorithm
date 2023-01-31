@@ -6,10 +6,8 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.regex.Pattern;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
@@ -212,5 +210,225 @@ public class TestA {
         assertThat(result).isEqualTo(expect);
     }
 
+    @Test
+    @DisplayName("중복문자제거")
+    void test06() {
+        //given
+        String message = "ksekkset";
+        String expect = "kset";
+        String result = "";
+
+        //when
+        char[] chars = message.toCharArray();
+        for (int i = 0; i < chars.length; i++) {
+//            System.out.printf("%s :: %s :: %s %n", chars[i], i, message.indexOf(chars[i]));
+            if (i == message.indexOf(chars[i])) {
+                result += chars[i];
+            }
+        }
+
+        //then
+        assertThat(result).isEqualTo(expect);
+    }
+
+    @Test
+    @DisplayName("회문문자열 체크 - 인덱스")
+    void test07_A() {
+        //given
+        String message = "GOOG";
+        boolean expect = true;
+        boolean result = false;
+
+        //when
+        char[] chars = message.toLowerCase().toCharArray();
+        for (int i = 0; i < chars.length / 2; i++) {
+            result = chars[i] == chars[chars.length - 1 - i];
+        }
+
+        //then
+        assertThat(expect).isEqualTo(result);
+    }
+
+    @Test
+    @DisplayName("회문문자열 체크 - StringBuilder")
+    void test07_B() {
+        //given
+        String message = "GOOG";
+        boolean expect = true;
+        boolean result = false;
+
+        //when
+        String messageReverse = new StringBuilder(message).reverse().toString();
+        if (message.equals(messageReverse)) {
+            result = true;
+        }
+
+        //then
+        assertThat(result).isEqualTo(expect);
+    }
+
+    // 팰린드롬이랑 회문문자열은 같은 의미를 가지는듯
+    @Test
+    @DisplayName("팰린드롬 - StringBuilder")
+    void test08() {
+        /*
+         * 조건1: 대소문자 구분없고 알파벳만으로 체크
+         * */
+        //given
+        String message = "found7, time: study; Yduts; emit, 7Dnuof";
+        boolean expect = true;
+        boolean result = false;
+
+        //when
+        String messageChange = message.toLowerCase().replaceAll("[^a-z]", "");
+        String messageFormat = new StringBuilder(messageChange).reverse().toString();
+        if (messageChange.equals(messageFormat)) {
+            result = true;
+        }
+
+        //then
+        assertThat(result).isEqualTo(expect);
+    }
+
+    @Test
+    @DisplayName("숫자추출  - 정규식")
+    void test09_A() {
+        //given
+        String message = "cwajli21ljil290";
+        int expect = 21290;
+        int result;
+
+        //when
+        StringBuilder value = new StringBuilder();
+        char[] chars = message.toCharArray();
+        for (char aChar : chars) {
+            if (Pattern.matches("^[0-9]*$", String.valueOf(aChar))) {
+                value.append(aChar);
+            }
+        }
+        result = Integer.parseInt(value.toString());
+
+        //then
+        assertThat(result).isEqualTo(expect);
+    }
+
+    @Test
+    @DisplayName("숫자추출  - 아스키코드")
+    void test09_B() {
+        //given
+        String message = "cwajli21ljil290";
+        int expect = 21290;
+        int result = 0;
+
+        //when
+        char[] chars = message.toCharArray();
+        for (char unit : chars) {
+            if (unit >= 48 && unit <= 57) {
+                result = result * 10 + (unit - 48);
+            }
+        }
+
+        //then
+        assertThat(result).isEqualTo(expect);
+    }
+
+    @Test
+    @DisplayName("문자거리")
+    void test10() {
+        //given
+        String message = "teachermode";
+        char target = 'e';
+        String expect = "10121012210";
+        String result = "";
+
+        //when
+        StringBuilder stringBuilder = new StringBuilder();
+        char[] chars = message.toCharArray();
+        for (int i = 0; i < chars.length; i++) {
+            boolean loop = true;
+            int distance = 0;
+            while (loop) {
+                if (i == 0) {
+                    char checkValue = chars[i + distance];
+                    if (checkValue == target) {
+                        stringBuilder.append(distance);
+                        loop = false;
+                    } else {
+                        distance++;
+                    }
+                } else if (i == chars.length - 1) {
+                    char checkValue = chars[i - distance];
+                    if (checkValue == target) {
+                        stringBuilder.append(distance);
+                        loop = false;
+                    } else {
+                        distance++;
+                    }
+                } else {
+                    char rightCheckValue = chars[i + distance];
+                    char leftCheckValue = chars[i - distance];
+                    if (rightCheckValue == target || leftCheckValue == target) {
+                        stringBuilder.append(distance);
+                        loop = false;
+                    } else {
+                        distance++;
+                    }
+                }
+            }
+        }
+        result = stringBuilder.toString();
+
+        //then
+        assertThat(result).isEqualTo(expect);
+        System.out.println(result);
+    }
+
+    @Test
+    void stringCompress() {
+        //given
+        String message = "KKHSSSSSSSE";
+        String expect = "K2HS7E";
+        StringBuilder stringBuilder = new StringBuilder();
+
+        //when
+        Map<String, Integer> map = new LinkedHashMap<>();
+        char[] chars = message.toCharArray();
+        for (char unit : chars) {
+            map.merge(String.valueOf(unit), 1, Integer::sum);
+        }
+
+        for (String key : map.keySet()) {
+            stringBuilder.append(key).append(map.get(key) == 1 ? "" : map.get(key));
+        }
+
+        //then
+        assertThat(stringBuilder.toString()).isEqualTo(expect);
+    }
+
+    @Test
+    void passwordSign() {
+        /*
+         * 1. 암호는 7자리로 구성되어있다.
+         * 2. # -> 1, * -> 0 으로 2진수로 변경 -> 2진수를 10진수로 변경 -> 10진수를 아스키코드로 변경
+         * */
+        //given
+        int unitCount = 4;
+        String message = "#****###**#####**#####**##**";
+        String expect = "COOL";
+        StringBuilder stringBuilder = new StringBuilder();
+
+        //when
+        char[] chars = message.toCharArray();
+        for (int i = 0; i < chars.length; i += 7) {
+            String password = message.substring(i, i + 7); // 암호
+            String passwordTwo = password.replaceAll("#", "1").replaceAll("\\*", "0"); // 2진수
+            int passwordTen = Integer.parseInt(passwordTwo, 2);
+            char unit = (char) passwordTen;
+            stringBuilder.append(unit);
+        }
+
+        //then
+        assertThat(stringBuilder.toString()).isEqualTo(expect);
+    }
 
 }
