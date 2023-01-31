@@ -421,7 +421,7 @@ public class TestA {
         char[] chars = message.toCharArray();
         for (int i = 0; i < chars.length; i += 7) {
             String password = message.substring(i, i + 7); // 암호
-            String passwordTwo = password.replaceAll("#", "1").replaceAll("\\*", "0"); // 2진수
+            String passwordTwo = password.replace("#", "1").replace("*", "0"); // 2진수
             int passwordTen = Integer.parseInt(passwordTwo, 2);
             char unit = (char) passwordTen;
             stringBuilder.append(unit);
