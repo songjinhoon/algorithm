@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @SpringBootTest
-public class TestA {
+public class TestString {
 
     @MethodSource("paramForTest001")
     @DisplayName("문자열에 특정 문자가 몇개 포함되어있는지")
