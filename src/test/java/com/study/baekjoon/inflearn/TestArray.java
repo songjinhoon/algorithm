@@ -4,8 +4,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.stream.IntStream;
+import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
@@ -108,10 +109,10 @@ public class TestArray {
 
         //when
         int[] check = new int[range + 1];
-        for (int i = 2; i<= range; i++) {
+        for (int i = 2; i <= range; i++) {
             if (check[i] == 0) {
                 result++;
-                for (int j=i; j<=range; j= j+i) {
+                for (int j = i; j <= range; j = j + i) {
                     check[j] = 1;
                 }
             }
@@ -119,6 +120,44 @@ public class TestArray {
 
         //then
         assertThat(result).isEqualTo(expect);
+    }
+
+    @Test
+    @DisplayName("뒤집은 소수")
+    void checkPrimeNumber() {
+        //given
+        int[] array = new int[]{32, 55, 62, 20, 250, 370, 200, 30, 100};
+        List<Integer> expect = List.of(23, 2, 73, 2, 3);
+
+        //when
+        List<Integer> result = new ArrayList<>();
+        for (int i = 0; i < array.length; i++) {
+            int temp = array[i], res = 0;
+            while (temp > 0) {
+                int t = temp % 10;
+                res = res * 10 + t;
+                temp = temp / 10;
+            }
+
+            if (isPrime(res)) {
+                result.add(res);
+            }
+        }
+
+        //then
+        assertThat(result).isEqualTo(expect);
+    }
+
+    private boolean isPrime(int number) {
+        if (number == 1) {
+            return false;
+        }
+        for (int i = 2; i < number; i++) {
+            if (number % i == 0) {
+                return false;
+            }
+        }
+        return true;
     }
 
 }
