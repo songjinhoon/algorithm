@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
@@ -395,7 +396,7 @@ public class TestArray {
     }
 
     @Test
-    @DisplayName("멘토링")
+    @DisplayName("멘토링-A")
     void solution12A() {
         //given
         int[][] array = new int[][]{
@@ -412,23 +413,276 @@ public class TestArray {
         int expect = 3;
 
         //when
-        for (int i = 0; i < array.length; i++) { //학생 반복
-            boolean[] students = new boolean[array.length];
-            Arrays.fill(students, true);
-            boolean checker = false;
-            for (int j = 0; j < array.length; j++) { // 멘티 가능 학생 체크
-                for (int k = 0; k < array.length; k++) {
-                    if (array[j][k] == i + 1) {
-                        checker = true;
-                    } else {
-                        students[k] = checker;
+        for (int i = 0; i < array[0].length; i++) { //학생 반복
+            int targetStudent = i + 1;
+            boolean[] check = new boolean[array[0].length];
+            Arrays.fill(check, true);
+
+            for (int k = 0; k < array.length; k++) {
+                if (k == 0) {
+                    check[targetStudent - 1] = false;
+                }
+                long count = List.of(check).stream().filter(data -> false).count();
+                if (count == array[0].length) {
+                    break;
+                } else {
+                    for (int j = 0; j < array[k].length; j++) {
+                        if (array[k][j] == targetStudent) {
+                            break;
+                        }
+                        check[array[k][j] - 1] = false;
                     }
+                }
+            }
+
+            System.out.println(targetStudent + "번째 학생");
+            System.out.println(Arrays.toString(check));
+        }
+
+        //then
+    }
+
+    @Test
+    @DisplayName("멘토링-B")
+    void solution12B() {
+        //given
+        int[][] array = new int[][]{
+                {
+                        3, 4, 1, 2
+                },
+                {
+                        4, 3, 2, 1
+                },
+                {
+                        3, 1, 4, 2
+                }
+        };
+        int expect = 3;
+
+        //when
+        int result = 0;
+        int studentCount = array[0].length;
+        int testCount = array.length;
+
+        for (int i = 1; i <= studentCount; i++) { // 멘토체크
+            for (int j = 1; j <= studentCount; j++) { // 멘티체크
+                int count = 0;
+                for (int[] ints : array) { // 테스트 수 만큼 돈다.
+                    int pi = 0, pj = 0;
+                    for (int s = 0; s < studentCount; s++) {
+                        if (ints[s] == i) pi = s;
+                        if (ints[s] == j) pj = s;
+                    }
+                    if (pi < pj) count++;
+                }
+                if (count == testCount) {
+                    //모든 테스트에서 멘토가 멘티보다 앞선다면 추가하겠다.
+                    result++;
                 }
             }
         }
 
+        //then
+        assertThat(result).isEqualTo(expect);
+    }
+
+    @Test
+    @DisplayName("두 배열 합치기 - 배열을 합쳐서 정렬하는 방법")
+    void twoArrayCombine() {
+        //given
+        int[] aArray = new int[]{1, 3, 5};
+        int[] bArray = new int[]{2, 3, 6, 7, 9};
+        int[] expect = new int[]{1, 2, 3, 3, 5, 6, 7, 9};
+
+        //when
+        int[] result = new int[aArray.length + bArray.length];
+        int aPointer = 0, bPointer = 0, pointer = 0;
+        do {
+            if (aPointer < aArray.length && bPointer < bArray.length) {
+                if (aArray[aPointer] <= bArray[bPointer]) {
+                    result[pointer] = aArray[aPointer];
+                    aPointer++;
+                } else {
+                    result[pointer] = bArray[bPointer];
+                    bPointer++;
+                }
+            } else if (aPointer < aArray.length) {
+                result[pointer] = aArray[aPointer];
+                aPointer++;
+            } else {
+                result[pointer] = bArray[bPointer];
+                bPointer++;
+            }
+            pointer++;
+        } while (aPointer != aArray.length || bPointer != bArray.length);
 
         //then
+        assertThat(result).isEqualTo(expect);
+    }
+
+    @Test
+    @DisplayName("공통원소 구해서 오름차순 정렬")
+    void findCommonElementA() {
+        //given
+        int aSize = 5;
+        int[] aArray = new int[]{1, 3, 9, 5, 2};
+        int bSize = 5;
+        int[] bArray = new int[]{3, 2, 5, 7, 8};
+        int[] expect = {2, 3, 5};
+
+        //when
+        List<Integer> result = new ArrayList<>();
+        for (int i = 0; i < aSize; i++) {
+            for (int j = 0; j < bSize; j++) {
+                if (aArray[i] == bArray[j]) {
+                    result.add(aArray[i]);
+                    break;
+                }
+            }
+        }
+        Collections.sort(result);
+        List<Integer> aList = Arrays.stream(expect).boxed().collect(Collectors.toList());
+
+        //then
+        assertThat(result).isEqualTo(aList);
+    }
+
+    @Test
+    @DisplayName("공통원소 구해서 오름차순 정렬")
+    void findCommonElementB() {
+        //given
+        int aSize = 5;
+        int[] aArray = new int[]{1, 3, 9, 5, 2};
+        int bSize = 5;
+        int[] bArray = new int[]{3, 2, 5, 7, 8};
+        int[] expect = {2, 3, 5};
+
+        //when
+        Arrays.sort(aArray);
+        Arrays.sort(bArray);
+        List<Integer> result = new ArrayList<>();
+        int aPointer = 0, bPointer = 0;
+        while (aPointer < aSize && bPointer < bSize) {
+            if (aArray[aPointer] == bArray[bPointer]) {
+                result.add(aArray[aPointer]);
+                aPointer++;
+                bPointer++;
+            } else if (aArray[aPointer] < bArray[bPointer]) {
+                aPointer++;
+            } else if (aArray[aPointer] > bArray[bPointer]) {
+                bPointer++;
+            }
+        }
+
+        //then
+        assertThat(result).isEqualTo(Arrays.stream(expect).boxed().collect(Collectors.toList()));
+    }
+
+    @Test
+    @DisplayName("슬라이딩윈도우 - 최대매출")
+    void slidingWindow() {
+        //given
+        int length = 10;
+        int depth = 3;
+        int[] array = new int[]{12, 15, 11, 20, 25, 10, 20, 19, 13, 15};
+        int expect = 56;
+
+        //when - 1
+        int checkValue = 0;
+        for (int i = 0; i < length - depth - 1; i++) {
+            int sumValue = 0;
+            for (int j = i; j < i + depth; j++) {
+                sumValue += array[j];
+            }
+            checkValue = Math.max(checkValue, sumValue);
+        }
+
+        //when - 2
+        int sumValue = 0;
+        int result2 = 0;
+        for (int i = 0; i < depth; i++) {
+            sumValue += array[i];
+        }
+        for (int i = depth; i < length; i++) {
+            sumValue += array[i] - array[i - depth];
+            result2 = Math.max(result2, sumValue);
+        }
+
+        //then
+        assertThat(checkValue).isEqualTo(expect);
+        assertThat(result2).isEqualTo(expect);
+    }
+
+    @Test
+    @DisplayName("연속부분수열")
+    void test() {
+        //given
+        int length = 8;
+        int checkValue = 6;
+        int[] array = new int[]{1, 2, 1, 3, 1, 1, 1, 2};
+        int expect = 3;
+
+        //when - 0
+        int result0 = 0;
+        for (int i = 0; i < length; i++) {
+            int sumValue = array[i];
+            for (int j = i + 1; j < length; j++) {
+                sumValue += array[j];
+                if (sumValue == checkValue) {
+                    result0++;
+                    break;
+                }
+                if (sumValue > checkValue) {
+                    break;
+                }
+            }
+        }
+
+        //when - 2
+        int sum = 0, result1 = 0, leftPointer = 0;
+        for (int i = 0; i < length; i++) {
+            sum += array[i];
+            if (sum == checkValue) {
+                result1++;
+            }
+            while (sum >= checkValue) {
+                sum -= array[leftPointer++];
+                if (sum == checkValue) {
+                    result1++;
+                }
+            }
+        }
+
+        //then
+        assertThat(result0).isEqualTo(expect);
+        assertThat(result1).isEqualTo(expect);
+    }
+
+    @Test
+    @DisplayName("연속된 자연수의 합")
+    void testA() {
+        //given
+        int checkValue = 15;
+        int expect = 3;
+
+        //when - 1
+        int result0 = 0;
+        for (int i = 1; i < checkValue; i++) {
+            int sumValue = i;
+            for (int j = i + 1; j < checkValue; j++) {
+                sumValue += j;
+                if (sumValue == checkValue) {
+                    result0++;
+                    break;
+                }
+                if (sumValue > checkValue) {
+                    break;
+                }
+            }
+        }
+
+        //then
+        assertThat(result0).isEqualTo(expect);
     }
 
 }
