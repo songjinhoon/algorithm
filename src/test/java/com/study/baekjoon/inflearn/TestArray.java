@@ -685,4 +685,32 @@ public class TestArray {
         assertThat(result0).isEqualTo(expect);
     }
 
+    @Test
+    @DisplayName("최대 길이 연속부분수열")
+    void testB() {
+        //given
+        int n = 14;
+        int k = 2;
+        int[] array = {1, 1, 0, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1};
+        int expect = 8;
+
+        //when
+        int answer = 0, count = 0, lt = 0;
+        for (int rt = 0; rt < n; rt++) {
+            if (array[rt] == 0) {
+                count++;
+            }
+            while (count > k) {
+                if (array[lt] == 0) {
+                    count--;
+                }
+                lt++;
+            }
+            answer = Math.max(answer, rt - lt + 1);
+        }
+
+        //then
+        assertThat(answer).isEqualTo(expect);
+    }
+
 }
