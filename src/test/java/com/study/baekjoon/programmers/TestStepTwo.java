@@ -212,4 +212,40 @@ public class TestStepTwo {
         assertThat(answer).isEqualTo(expect);
     }
 
+    @Test
+    @DisplayName("영어 끝말잇기")
+    void solution07() {
+        //given
+        int n = 2;
+//        String[] words = {"tank", "kick", "know", "wheel", "land", "dream", "mother", "robot", "tank"};
+        String[] words = {"hello", "one", "even", "never", "now", "world", "draw"};
+        int[] expect = {1, 3};
+        int[] answer = new int[2];
+
+        //when
+        List<String> useDatas = new ArrayList<>();
+        for (int i = 0; i < words.length; i++) {
+            String word = words[i];
+            if (useDatas.contains(word)) {
+                answer[0] = i % n + 1;
+                answer[1] = i / n + 1;
+                break;
+            }
+            if (i > 0 && !words[i - 1].substring(words[i - 1].length() - 1).equals(word.substring(0, 1))) {
+                answer[0] = i % n + 1;
+                answer[1] = i / n + 1;
+                break;
+            }
+            useDatas.add(word);
+        }
+
+        if (useDatas.size() == words.length) {
+            answer[0] = 0;
+            answer[1] = 0;
+        }
+
+        //then
+        assertThat(answer).isEqualTo(expect);
+    }
+
 }

@@ -4,6 +4,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
@@ -98,6 +99,80 @@ public class TestHashSet {
 
             map.merge(array[rightPointer], 1, Integer::sum);
             answer.add(map.size());
+        }
+
+        //then
+        assertThat(answer).isEqualTo(expect);
+    }
+
+    @Test
+    @DisplayName("모든 아나그램 찾기 - Hash, Sliding Window")
+    void solutionD() {
+        //given
+        String s = "bacaAacba";
+        String t = "abc";
+        int expect = 3;
+        int answer = 0;
+
+        //when
+        Map<Character, Integer> compareMap = new HashMap<>();
+        for (char unit : t.toCharArray()) {
+            compareMap.merge(unit, 1, Integer::sum);
+        }
+
+        char[] chars = s.toLowerCase().toCharArray();
+        Map<Character, Integer> checkMap = new HashMap<>();
+        for (int i = 0; i < t.length() - 1; i++) {
+            checkMap.merge(chars[i], 1, Integer::sum);
+        }
+
+        int leftPointer = 0;
+        for (int rightPointer = t.length() - 1; rightPointer < s.length(); rightPointer++) {
+            if (rightPointer >= t.length()) {
+                checkMap.put(chars[leftPointer], checkMap.get(chars[leftPointer]) - 1);
+                if (checkMap.get(chars[leftPointer]) == 0) {
+                    checkMap.remove(chars[leftPointer]);
+                }
+                leftPointer++;
+            }
+            checkMap.merge(chars[rightPointer], 1, Integer::sum);
+            if (checkMap.equals(compareMap)) {
+                answer++;
+            }
+        }
+
+        //then
+        assertThat(answer).isEqualTo(expect);
+    }
+
+    @Test
+    @DisplayName("K번쨰 큰 수")
+    void solutionE() {
+        /*
+         * 지금 풀이는 처음에 정렬 후 타겟 인덱스에 도달하는 시점에 반복을 끝냇기 때문에 HashSet을 사용하였다.
+         * 만약, 정렬을 실행하지 않고 모든 데이터의 합을 구한뒤 해당 인덱스의 값을 구하려면 TreeSet이 맞는거 같다.
+         * */
+        //given
+        int numberLength = 10;
+        int targetIndex = 3;
+        List<Integer> numbers = List.of(13, 15, 34, 23, 45, 65, 33, 11, 26, 42);
+        int expect = 143;
+        int answer = 0;
+
+        //when
+        List<Integer> numberFormats = numbers.stream().sorted(Comparator.reverseOrder()).collect(Collectors.toList()); // [65, 45, 42, 34, 33, 26, 23, 15, 13, 11]
+        Set<Integer> datas = new HashSet<>();
+
+        for (int i = 0; i < numberFormats.size(); i++) {
+            for (int j = 1; j < numberFormats.size(); j++) {
+                for (int k = 2; k < numberFormats.size(); k++) {
+                    datas.add(numberFormats.get(i) + numberFormats.get(j) + numberFormats.get(k));
+                    if (datas.size() == targetIndex) {
+                        answer = numberFormats.get(i) + numberFormats.get(j) + numberFormats.get(k);
+                        break;
+                    }
+                }
+            }
         }
 
         //then
