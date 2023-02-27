@@ -295,7 +295,43 @@ public class TestSortingSearching {
         return count;
     }
 
+    @Test
+    @DisplayName("마구간정하기(결정알고리즘)")
+    void solutionK() {
+        //given
+        int[] array = {1, 2, 8, 4, 9};
+        int stalls = 5, horses = 3;
+        int expect = 3, answer = 0;
 
+        //when
+        Arrays.sort(array);
+        int lt = 1, rt = array[stalls - 1];
+        while (lt <= rt) {
+            int mid = (lt + rt) / 2;
+            if (countK(array, mid) >= horses) {
+                answer = mid;
+                lt = mid + 1;
+            } else {
+                rt = mid - 1;
+            }
+
+        }
+
+        //then
+        assertThat(answer).isEqualTo(expect);
+    }
+
+    private int countK(int[] array, int mid) {
+        int count = 1;
+        int ep = array[0];
+        for (int i = 1; i < array.length; i++) {
+            if (array[i] - ep >= mid) {
+                count++;
+                ep = array[i];
+            }
+        }
+        return count;
+    }
 
 }
 
