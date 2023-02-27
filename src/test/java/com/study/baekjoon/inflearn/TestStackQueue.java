@@ -4,6 +4,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 import java.util.Stack;
 
@@ -231,6 +232,85 @@ public class TestStackQueue {
         assertThat(answer).isEqualTo(expect);
     }
 
+    @Test
+    @DisplayName("교육과정 설계")
+    void solutionG() {
+        //given
+        String needSubject = "CBA";
+        String schedule = "CBDAGE";
+        String expect = "YES";
+        String answer;
 
+        //when
+        Queue<Character> storage = new LinkedList<>();
+        for (char unit : needSubject.toCharArray()) {
+            storage.offer(unit);
+        }
 
+        for (char unit : schedule.toCharArray()) {
+            if (storage.contains(unit)) {
+                if (!storage.poll().equals(unit)) {
+                    break;
+                }
+            }
+        }
+        answer = storage.isEmpty() ? "YES" : "NO";
+
+        //then
+        assertThat(answer).isEqualTo(expect);
+    }
+
+    @Test
+    @DisplayName("응급실")
+    void solutionH() {
+        //given
+        int checkNumber = 2;
+        List<Integer> users = List.of(60, 50, 70, 80, 90); // 70 60 50
+        int expect = 3;
+        int answer = 0;
+
+        //when
+        Queue<Person> storage = new LinkedList<>();
+        for (int i = 0; i < users.size(); i++) {
+            storage.offer(new Person(i, users.get(i)));
+        }
+
+        while (!storage.isEmpty()) {
+            Person person = storage.poll();
+            for (Person storageData : storage) {
+                if (storageData.value > person.value) {
+                    storage.offer(person);
+                    person = null;
+                    break;
+                }
+            }
+            if (person != null) {
+                answer++;
+                if (person.id == checkNumber) {
+                    break;
+                }
+            }
+        }
+
+        //then
+        assertThat(answer).isEqualTo(expect);
+    }
+
+}
+
+class Person implements Comparable<Person> {
+
+    int id;
+
+    int value;
+
+    public Person(int id, int value) {
+        this.id = id;
+        this.value = value;
+    }
+
+    @Override
+    public int compareTo(Person o) {
+        return this.id - o.id;
+    }
 }
