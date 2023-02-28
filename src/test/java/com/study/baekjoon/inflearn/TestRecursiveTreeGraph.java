@@ -4,6 +4,10 @@ import com.study.baekjoon.serach.Node;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.LinkedList;
+import java.util.Objects;
+import java.util.Queue;
+
 public class TestRecursiveTreeGraph {
 
     @Test
@@ -140,6 +144,33 @@ public class TestRecursiveTreeGraph {
             search(level + 1);
             datas[level] = 0;
             search(level + 1);
+        }
+    }
+
+    @Test
+    @DisplayName("이진트리순회(BFS)")
+    void solutionG() {
+        Node root = new Node(1);
+        root.leftNode = new Node(2);
+        root.rightNode = new Node(3);
+        root.leftNode.leftNode = new Node(4);
+        root.leftNode.rightNode = new Node(5);
+        root.rightNode.leftNode = new Node(6);
+        root.rightNode.rightNode = new Node(7);
+        breadthFirstSearch(root);
+    }
+
+    private void breadthFirstSearch(Node root) {
+        Queue<Node> storage = new LinkedList<>();
+        storage.offer(root);
+        int leftPointer = 0;
+        while (!storage.isEmpty()) {
+            int length = storage.size();
+            System.out.println(length + " : ");
+            for (int i = 0; i < length; i++) {
+                Node current = storage.poll();
+                System.out.print(Objects.requireNonNull(current).data);
+            }
         }
     }
 

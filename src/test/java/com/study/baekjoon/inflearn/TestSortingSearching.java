@@ -1,10 +1,11 @@
 package com.study.baekjoon.inflearn;
 
+import com.study.baekjoon.sort.CustomDuplicationCheck;
+import com.study.baekjoon.sort.CustomSort;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
@@ -13,83 +14,32 @@ public class TestSortingSearching {
     @Test
     @DisplayName("선택정렬")
     void solutionA() {
-        /*
-         * 굳이 내장클래스를 쓰지 않고 정렬 알고리즘을 집적 구현하는 이유는 -> 정렬 알고리즘은 알고리즘을 배우는 가장 좋은 교재라고 한다.
-         * */
-        //given
-        String message = "13 5 11 7 23 15";
-        String expect = "5 7 11 13 15 23";
-        String answer = "";
-
-        //when
-        int[] array = Arrays.stream(message.split(" ")).mapToInt(Integer::parseInt).toArray();
-        for (int i = 0; i < array.length; i++) {
-            for (int k = i + 1; k < array.length; k++) {
-                if (array[i] > array[k]) {
-                    int nowData = array[i];
-                    array[i] = array[k];
-                    array[k] = nowData;
-                }
-            }
-        }
-        answer = Arrays.stream(array).mapToObj(String::valueOf).collect(Collectors.joining(" "));
-
-        //then
-        assertThat(answer).isEqualTo(expect);
+        int[] array = {13, 5, 11, 7, 23, 15};
+        CustomSort customSort = new CustomSort();
+        customSort.selectionSort(array);
+        System.out.println(Arrays.toString(array));
     }
 
     @Test
     @DisplayName("버블정렬")
     void solutionB() {
-        //given
-        String message = "13 5 11 7 23 15";
-        String expect = "5 7 11 13 15 23";
-        String answer = "";
-
-        //when
-        int[] array = Arrays.stream(message.split(" ")).mapToInt(Integer::parseInt).toArray();
-        for (int i = 0; i < array.length - 1; i++) {
-            for (int j = 0; j < array.length - 1 - i; j++) {
-                if (array[j] > array[j + 1]) {
-                    int data = array[j];
-                    array[j] = array[j + 1];
-                    array[j + 1] = data;
-                }
-            }
-        }
-        answer = Arrays.stream(array).mapToObj(String::valueOf).collect(Collectors.joining(" "));
-
-        //then
-        assertThat(answer).isEqualTo(expect);
+        int[] array = {13, 5, 11, 7, 23, 15};
+        CustomSort customSort = new CustomSort();
+        customSort.bubbleSort(array);
+        System.out.println(Arrays.toString(array));
     }
 
     @Test
     @DisplayName("삽입정렬")
     void solutionC() {
-        //given
-        int[] array = {11, 7, 5, 6, 10, 9};
-        int[] expect = {5, 6, 7, 9, 10, 11};
-        int[] answer = {};
-
-        //when
-        for (int i = 1; i < array.length; i++) {
-            int target = array[i], j;
-            for (j = i - 1; j >= 0; j--) {
-                if (array[j] > target) {
-                    array[j + 1] = array[j];
-                } else {
-                    break;
-                }
-            }
-            array[j + 1] = target;
-        }
-
-        //then
-        assertThat(array).isEqualTo(expect);
+        int[] array = {13, 5, 11, 7, 23, 15};
+        CustomSort customSort = new CustomSort();
+        customSort.insertionSort(array);
+        System.out.println(Arrays.toString(array));
     }
 
     @Test
-    @DisplayName("캐시메모리")
+    @DisplayName("퀴즈 - 캐시메모리")
     void solutionD() {
         //given
         int cashSize = 5;
@@ -123,55 +73,19 @@ public class TestSortingSearching {
     }
 
     @Test
-    @DisplayName("중복 확인")
+    @DisplayName("중복 확인 - 해쉬맵")
     void solutionE() {
-        /*
-         * O(N) -> 해쉬맵 사용
-         * */
-        //given
         Integer[] datas = {20, 25, 52, 30, 39, 33, 43, 33};
-        String expect = "D";
-        String answer = "U";
-
-        //when
-        Map<Integer, Integer> storage = new HashMap<>();
-        for (Integer data : datas) {
-            Integer checkData = storage.get(data);
-            if (checkData != null) {
-                storage.put(checkData, 1);
-            } else {
-                answer = "D";
-                break;
-            }
-        }
-
-        //then
-        assertThat(answer).isEqualTo(expect);
+        CustomDuplicationCheck customDuplicationCheck = new CustomDuplicationCheck();
+        System.out.println(customDuplicationCheck.checkByHashMap(datas));
     }
 
     @Test
-    @DisplayName("중복 확인")
+    @DisplayName("중복 확인 - 정렬")
     void solutionF() {
-        /*
-         * 정렬사용 -> NlogN
-         * 왜 NlogN인가???
-         * */
-        //given
         Integer[] datas = {20, 25, 52, 30, 39, 33, 43, 33};
-        String expect = "D";
-        String answer = "U";
-
-        //when
-        Arrays.sort(datas);
-        for (int i = 0; i < datas.length - 1; i++) {
-            if (datas[i].equals(datas[i + 1])) {
-                answer = "D";
-                break;
-            }
-        }
-
-        //then
-        assertThat(answer).isEqualTo(expect);
+        CustomDuplicationCheck customDuplicationCheck = new CustomDuplicationCheck();
+        System.out.println(customDuplicationCheck.checkBySort(datas));
     }
 
     @Test

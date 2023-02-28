@@ -3,7 +3,7 @@ package com.study.baekjoon.serach;
 // 알고리즘의 예시이기 때문에 간단하게 작성한다.
 public class Node {
 
-    int data;
+    public int data;
 
     public Node leftNode;
 

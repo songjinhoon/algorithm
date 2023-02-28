@@ -1,5 +1,6 @@
 package com.study.baekjoon;
 
+import com.study.baekjoon.sort.CustomSort;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,6 +17,13 @@ class CodingTestApplicationTests {
 
     @Test
     void contextLoads() {
+        //선택정렬
+        int[] array = {13, 5, 11, 7, 23, 15};
+        CustomSort customSort = new CustomSort();
+//        customSort.selectionSort(array);
+//        customSort.bubbleSort(array);
+
+        System.out.println(Arrays.toString(array));
     }
 
     @Test
