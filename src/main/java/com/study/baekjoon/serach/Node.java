@@ -1,5 +1,9 @@
 package com.study.baekjoon.serach;
 
+import java.util.LinkedList;
+import java.util.Objects;
+import java.util.Queue;
+
 // 알고리즘의 예시이기 때문에 간단하게 작성한다.
 public class Node {
 
@@ -41,6 +45,28 @@ public class Node {
             rightNode.depthFirstSearchForPost();
         }
         System.out.println(data);
+    }
+
+    public void breadthFirstSearch() {
+        Queue<Node> storage = new LinkedList<>();
+        storage.offer(this);
+        int level = 0;
+        while (!storage.isEmpty()) {
+            int length = storage.size();
+            System.out.print(level + " : ");
+            for (int i = 0; i < length; i++) {
+                Node current = storage.poll();
+                System.out.print(Objects.requireNonNull(current).data + " ");
+                if (current.leftNode != null) {
+                    storage.offer(current.leftNode);
+                }
+                if (current.rightNode != null) {
+                    storage.offer(current.rightNode);
+                }
+            }
+            level++;
+            System.out.println();
+        }
     }
 
 }

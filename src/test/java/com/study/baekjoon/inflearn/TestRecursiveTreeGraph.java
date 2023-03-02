@@ -8,6 +8,8 @@ import java.util.LinkedList;
 import java.util.Objects;
 import java.util.Queue;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+
 public class TestRecursiveTreeGraph {
 
     @Test
@@ -148,7 +150,7 @@ public class TestRecursiveTreeGraph {
     }
 
     @Test
-    @DisplayName("이진트리순회(BFS)")
+    @DisplayName("BFS(이진트리순회)")
     void solutionG() {
         Node root = new Node(1);
         root.leftNode = new Node(2);
@@ -157,19 +159,133 @@ public class TestRecursiveTreeGraph {
         root.leftNode.rightNode = new Node(5);
         root.rightNode.leftNode = new Node(6);
         root.rightNode.rightNode = new Node(7);
-        breadthFirstSearch(root);
+        root.breadthFirstSearch();
     }
 
-    private void breadthFirstSearch(Node root) {
+    @Test
+    @DisplayName("BFS(상태트리탐색) - 송아지찾기")
+    void solutionH() {
+        // 1. 상태트리란?
+        //given
+        int answer = 0, expect = 3;
+        int[] distance = {-1, 1, 5};
+        int[] ch = new int[10000];
+        int s = 5, e = 14;
+
+        //when
+        Queue<Integer> storage = new LinkedList<>();
+        ch[s] = 1;
+        storage.offer(s);
+
+        while (!storage.isEmpty()) { // 5
+            int size = storage.size();
+            for (int i = 0; i < size; i++) {
+                if (storage.isEmpty()) {
+                    break;
+                }
+                int userLocation = storage.poll();
+                for (int j = 0; j < distance.length; j++) {
+                    int location = userLocation + distance[j];
+                    if (location == e) {
+                        storage.clear();
+                        break;
+                    }
+                    if (ch[location] == 0) {
+                        ch[location] = 1;
+                        storage.offer(location);
+                    }
+                }
+            }
+            answer++;
+        }
+
+        //then
+        assertThat(answer).isEqualTo(expect);
+    }
+
+    @Test
+    @DisplayName("BFS(넓이우선탐색) - 말단 노드까지의 가장 짧은 경로 길이 구하기")
+    void solutionI() {
+        //말단노드는 자식이 없는 부모노드를 말함
+        //given
+        int expect = 1, answer = 0;
+        Node root = new Node(1);
+        root.leftNode = new Node(2);
+        root.rightNode = new Node(3);
+        root.leftNode.leftNode = new Node(4);
+        root.leftNode.rightNode = new Node(5);
+
+        //when
         Queue<Node> storage = new LinkedList<>();
         storage.offer(root);
-        int leftPointer = 0;
-        while (!storage.isEmpty()) {
-            int length = storage.size();
-            System.out.println(length + " : ");
-            for (int i = 0; i < length; i++) {
-                Node current = storage.poll();
-                System.out.print(Objects.requireNonNull(current).data);
+
+        while (!storage.isEmpty()) { // 1
+            int size = storage.size();
+            for (int i = 0; i < size; i++) {
+                Node node = Objects.requireNonNull(storage.poll());
+                if (node.leftNode == null && node.rightNode == null) {
+                    storage.clear();
+                    break;
+                }
+                if (node.leftNode != null) {
+                    storage.offer(node.leftNode);
+                }
+                if (node.rightNode != null) {
+                    storage.offer(node.rightNode);
+                }
+            }
+            if (!storage.isEmpty()) {
+                answer++;
+            }
+        }
+
+        //then
+        assertThat(answer).isEqualTo(expect);
+    }
+
+
+    int solutionAnswerJ = 0;
+    int[] ch = new int[5 + 1];
+
+    @Test
+    @DisplayName("DFS(경로탐색)")
+    void solutionJ() {
+        /*
+         * n -> 정점의 수
+         * m -> 간선의 수
+         * */
+        //given
+        int n = 5, expect = 6;
+        int[][] graph = new int[n + 1][n + 1];
+        graph[1][2] = 1;
+        graph[1][3] = 1;
+        graph[1][4] = 1;
+        graph[2][1] = 1;
+        graph[2][3] = 1;
+        graph[2][5] = 1;
+        graph[3][4] = 1;
+        graph[4][2] = 1;
+        graph[4][5] = 1;
+        ch[1] = 1;
+
+        //when
+        customFuncJ(graph, 1, n);
+
+        //then
+        assertThat(solutionAnswerJ).isEqualTo(expect);
+    }
+
+    private void customFuncJ(int[][] graph, int v, int n) {
+        if (v == n) {
+            solutionAnswerJ++;
+        } else {
+            for (int i = 1; i <= n; i++) {
+                if (graph[v][i] == 1 && ch[i] == 0) {
+                    ch[i] = 1;
+                    customFuncJ(graph, i, n);
+                    // 백지점
+                    ch[i] = 0;
+                }
             }
         }
     }
