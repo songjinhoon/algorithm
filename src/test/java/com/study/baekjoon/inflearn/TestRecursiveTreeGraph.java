@@ -47,12 +47,12 @@ public class TestRecursiveTreeGraph {
     @DisplayName("팩토리얼")
     void solutionC() {
         int number = 4;
-        System.out.println(customfuncC(number));
+        System.out.println(customFuncC(number));
     }
 
-    private int customfuncC(int number) {
+    private int customFuncC(int number) {
         if (number != 1) {
-            return number * customfuncC(number - 1);
+            return number * customFuncC(number - 1);
         } else {
             return number;
         }
@@ -180,9 +180,6 @@ public class TestRecursiveTreeGraph {
         while (!storage.isEmpty()) { // 5
             int size = storage.size();
             for (int i = 0; i < size; i++) {
-                if (storage.isEmpty()) {
-                    break;
-                }
                 int userLocation = storage.poll();
                 for (int j = 0; j < distance.length; j++) {
                     int location = userLocation + distance[j];
@@ -194,6 +191,9 @@ public class TestRecursiveTreeGraph {
                         ch[location] = 1;
                         storage.offer(location);
                     }
+                }
+                if (storage.isEmpty()) {
+                    break;
                 }
             }
             answer++;
