@@ -248,4 +248,137 @@ public class TestStepTwo {
         assertThat(answer).isEqualTo(expect);
     }
 
+    @Test
+    @DisplayName("카펫 - 완전탐색")
+    void solution08() {
+        /*
+         *  x >= y && y >= 3 &&  x >= 3
+         * */
+        //given
+        int brown = 10, yellow = 2;
+        int[] expect = {4, 3};
+        int[] answer = new int[2];
+
+        //when
+        int number = brown + yellow;
+
+        for (int x = 3; x <= number; x++) {
+            int y = number / x;
+            boolean check = number % x == 0;
+            if (x >= y && x >= 3 && y >= 3 && check && ((x - 2) * (y - 2) == yellow)) {
+                answer[0] = x;
+                answer[1] = y;
+                break;
+            }
+        }
+
+        //then
+        assertThat(answer).isEqualTo(expect);
+    }
+
+    @Test
+    @DisplayName("구명보트 - 탐욕법? - 풀이1")
+    void solution09() {
+        /*
+         * 100에 최대한 가깝게 구명보트를 채워야하는줄 알았는데 이렇게 하니까 효율성에서 통과를 못했다. 풀이 2에서 효율성까지 체크하겠다.
+         * 조건1: 한번에 최대 2명만 탈수있다.
+         * */
+        //given
+        int[] people = {20, 20, 60, 20}; // 80 70 50 50
+        int limit = 1000;
+        int expect = 2, answer = 0;
+
+        //when
+        List<Integer> datas = Arrays.stream(people).boxed().sorted(Comparator.reverseOrder()).collect(Collectors.toList());
+        int[] checks = new int[people.length];
+        for (int i = 0; i < datas.size(); i++) {
+            if (checks[i] == 1) {
+                continue;
+            }
+            answer++;
+            checks[i] = 1;
+            for (int j = i + 1; j < datas.size(); j++) {
+                if (datas.get(i) + datas.get(j) <= limit && checks[j] == 0) {
+                    checks[j] = 1;
+                    break;
+                }
+            }
+            if (Arrays.stream(checks).boxed().noneMatch(data -> data == 0)) {
+                break;
+            }
+        }
+
+        //then
+        assertThat(answer).isEqualTo(expect);
+    }
+
+    @Test
+    @DisplayName("구명보트 - 탐욕법? - 풀이2")
+    void solution10() {
+        // 리버스 정렬떄문에 효율성 통과 못하는듯?
+        //given
+        int[] people = {70, 50, 80, 50}; // 80 70 50 50
+        int limit = 100;
+        int expect = 3, answer = 0;
+
+        //when
+        Arrays.sort(people);
+        int leftPointer = 0;
+        int rightPointer = people.length - 1;
+
+        while (leftPointer <= rightPointer) {
+            if (people[leftPointer] + people[rightPointer] <= limit) {
+                leftPointer++;
+            }
+            rightPointer--;
+            answer++;
+        }
+
+        //then
+        assertThat(answer).isEqualTo(expect);
+    }
+
+    @Test
+    @DisplayName("예상 대진표")
+    void solution11() {
+        //given
+        int n = 8, a = 7, b = 4;
+        int expect = 3, answer = 1;
+
+        //when
+        int maxRound = n / 2;
+        int checkRound = 0;
+
+        Queue<Integer> storage = new LinkedList<>();
+        for (int i = 0; i < n; i++) {
+            storage.offer(i + 1);
+        }
+
+        while (true) {
+            checkRound++;
+            int userA = Objects.requireNonNull(storage.poll());
+            int userB = Objects.requireNonNull(storage.poll());
+            if (userA == a && userB == b || userB == a && userA == b) {
+                break;
+            } else {
+                if (userB == a || userB == b) {
+                    storage.offer(userB);
+                } else if (userA == a || userA == b) {
+                    storage.offer(userA);
+                } else {
+                    storage.offer(Math.max(userA, userB));
+                }
+            }
+            if (checkRound == maxRound) {
+                answer++;
+                maxRound = maxRound / 2;
+                checkRound = 0;
+            }
+        }
+
+        //then
+        assertThat(answer).isEqualTo(expect);
+    }
+
+
 }
