@@ -380,5 +380,77 @@ public class TestStepTwo {
         assertThat(answer).isEqualTo(expect);
     }
 
+    @Test
+    @DisplayName("N개의 최소공배수")
+    void solution12() {
+        //given
+        int[] arr = {2, 6, 8, 14};
+        int answer, expect = 168;
+
+        //when
+        Arrays.sort(arr);
+        answer = arr[arr.length - 1];
+        boolean checker = true;
+
+        while (checker) {
+            for (int i = arr.length - 2; i >= 0; i--) {
+                if (answer % arr[i] != 0) {
+                    answer += arr[arr.length - 1];
+                    break;
+                }
+                if (i == 0) {
+                    checker = false;
+                }
+            }
+        }
+
+        //then
+        assertThat(answer).isEqualTo(expect);
+    }
+
+    @Test
+    @DisplayName("점프와 순간이동")
+    void solution13() {
+        // 순간이동을 할 수 있냐 없냐
+        /*
+         * 5	2
+         * 6	2
+         * 5000	5
+         * */
+        //given
+        int n = 5, expect = 2, answer = 1;
+
+        //when
+        int checkValue = n;
+        do {
+            if (checkValue % 2 != 0) {
+                answer++;
+            }
+            checkValue = checkValue / 2;
+        } while (checkValue != 1);
+
+        //then
+        assertThat(answer).isEqualTo(expect);
+    }
+
+    @Test
+    @DisplayName("멀리 뛰기")
+    void solution14() {
+        //개수 체크 문제 -> DFS로했는데 .. 시간초과.. 알고보니 이거 피보나치 문제란다.... 후..
+        //given
+        int n = 4, expect = 5, answer = 0;
+
+        //when
+        int[] check = new int[n + 1];
+        check[0] = 1;
+        check[1] = 1;
+        for (int i = 2; i <= n; i++) {
+            check[i] = (check[i - 1] + check[i - 2]) % 1234567;
+        }
+        answer = check[n];
+
+        //then
+        assertThat(answer).isEqualTo(expect);
+    }
 
 }
