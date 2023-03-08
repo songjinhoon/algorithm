@@ -453,4 +453,77 @@ public class TestStepTwo {
         assertThat(answer).isEqualTo(expect);
     }
 
+    @Test
+    @DisplayName("H-INDEX")
+    void solution15() {
+        // NOT UNDERSTAND ZZZ
+        //given
+        int[] citations = {3, 0, 6, 1, 5};
+        int expect = 3, answer = 0;
+
+        //when
+        Arrays.sort(citations);
+        for (int i = 0; i < citations.length; i++) {
+
+            if (citations[i] >= citations.length - i) {
+                answer = citations.length - i;
+                break;
+            }
+
+        }
+
+        //then
+        assertThat(answer).isEqualTo(expect);
+    }
+
+    @Test
+    @DisplayName("괄호 회전하기")
+    void solution16() {
+        //given
+        String s = "[](){}";
+        int expect = 3, answer = 0;
+
+        //when
+        char[] chars = s.toCharArray();
+        Queue<Character> storage = new LinkedList<>();
+        for (char unit : chars) {
+            storage.offer(unit);
+        }
+
+        for (int i = 0; i < chars.length - 1; i++) {
+            Stack<Character> checkStorage = new Stack<>();
+
+            int count = 0;
+            for (Character check : storage) {
+                if (check == '[' || check == '(' || check == '{') {
+                    checkStorage.push(check);
+                } else {
+                    if (checkStorage.isEmpty()) {
+                        break;
+                    } else {
+                        Character pop = checkStorage.pop();
+                        if (check == ']' && pop != '[') {
+                            break;
+                        } else if (check == ')' && pop != '(') {
+                            break;
+                        } else if (check == '}' && pop != '{') {
+                            break;
+                        }
+                    }
+                }
+                count++;
+            }
+
+            if (count == s.length() && checkStorage.isEmpty()) {
+                answer++;
+            }
+
+            Character poll = storage.poll();
+            storage.offer(poll);
+        }
+
+        //then
+        assertThat(answer).isEqualTo(expect);
+    }
+
 }
