@@ -14,12 +14,12 @@ public class TestStepTwo {
     @DisplayName("JadenCase 문자열 만들기")
     void solution00() {
         //given
-        String message = "3people unFollowed me";
-        String expect = "3people Unfollowed Me";
+        String message = "3people unFollowed     me ";
+        String expect = "3people Unfollowed     Me ";
+        StringBuilder stringBuilder = new StringBuilder();
 
         //when
         char[] array = message.toCharArray();
-        StringBuilder stringBuilder = new StringBuilder();
 
         boolean upperCheck = true;
         for (char unit : array) {
@@ -35,7 +35,26 @@ public class TestStepTwo {
                 stringBuilder.append(Character.toLowerCase(unit));
             }
         }
-
+        //when-2 -> 공백떄문에 이렇게 접근하면 안됨
+        /*String[] words = message.split(" ");
+        for (int i = 0; i < words.length; i++) {
+            if (words[i].equals("")) {
+                stringBuilder.append(" ");
+                continue;
+            }
+            char[] units = words[i].toCharArray();
+            for (int k = 0; k < units.length; k++) {
+                if (Character.isDigit(units[k])) {
+                    stringBuilder.append(units[k]);
+                } else {
+                    if (k == 0) {
+                        stringBuilder.append(Character.toUpperCase(units[k]));
+                    } else {
+                        stringBuilder.append(Character.toLowerCase(units[k]));
+                    }
+                }
+            }
+        }*/
         //then
         assertThat(stringBuilder.toString()).isEqualTo(expect);
     }
@@ -43,21 +62,39 @@ public class TestStepTwo {
     @Test
     @DisplayName("최솟값 만들기 -> 효율성 테스트에서 통과못함....")
     void solution01() {
+        /*
+         * 1. Collection Sorting 시간복잡도는 O(NlogN)
+         * 2. PriorityQueue 시간복잡도는 O(logN)
+         * */
         //given
         int[] A = new int[]{1, 4, 2};
         int[] B = new int[]{5, 4, 4};
         int expect = 29;
+        int answer1 = 0;
+        int answer2 = 0;
 
         //when
         Arrays.sort(A);
         List<Integer> bList = Arrays.stream(B).boxed().sorted(Comparator.reverseOrder()).collect(Collectors.toList());
-        int sumValue = 0;
         for (int i = 0; i < A.length; i++) {
-            sumValue += A[i] * bList.get(i);
+            answer1 += A[i] * bList.get(i);
+        }
+        //when -2
+        PriorityQueue<Integer> a = new PriorityQueue<>();
+        PriorityQueue<Integer> b = new PriorityQueue<>(Collections.reverseOrder());
+
+        for (int i = 0; i < A.length; i++) {
+            a.add(A[i]);
+            b.add(B[i]);
+        }
+
+        while (!a.isEmpty()) {
+            answer2 += a.poll() * b.poll();
         }
 
         //then
-        assertThat(sumValue).isEqualTo(expect);
+        assertThat(answer1).isEqualTo(expect);
+        assertThat(answer2).isEqualTo(expect);
     }
 
     @Test
@@ -127,34 +164,19 @@ public class TestStepTwo {
     void solution04() {
         //given
         String message = "110010101001";
+        int[] answer = {0, 0};
         int[] expect = new int[]{3, 8};
 
-        //when
-        int cycleCount = 0;
-        int zeroRemoveCount = 0;
-
-        while (true) {
-            char[] chars = message.toCharArray();
-            for (char unit : chars) {
-                if (unit == '0') {
-                    zeroRemoveCount++;
-                }
-            }
-            String zeroRemoveValue = message.replace("0", "");
-            String binaryValue = Integer.toBinaryString(zeroRemoveValue.length());
-            message = binaryValue;
-
-            cycleCount++;
-
-            if (binaryValue.equals("1")) {
-                break;
-            }
-        }
-
-        int[] result = new int[]{cycleCount, zeroRemoveCount};
+        //when1
+        do {
+            answer[0] += 1;
+            String zeroRemove = message.replace("0", "");
+            answer[1] += message.length() - zeroRemove.length();
+            message = Integer.toBinaryString(zeroRemove.length());
+        } while (!message.equals("1"));
 
         //then
-        assertThat(result).isEqualTo(expect);
+        assertThat(answer).isEqualTo(expect);
     }
 
     @Test
@@ -162,21 +184,43 @@ public class TestStepTwo {
     void solution05() {
         //given
         int n = 5;
-        int expect = 5;
+        int expect = 5, answer = 0;
 
         //when
-        int answer;
-        int[] array = new int[2];
-        for (int i = 2; i < n; i++) {
-            if (i == 2) {
-                array[0] = 0;
-                array[1] = 1;
+        int[] array = new int[n + 1];
+
+        for (int i = 0; i <= n; i++) {
+            if (i == 0 || i == 1) {
+                array[i] = i % 1234567;
+            } else {
+                array[i] = (array[i - 2] + array[i - 1]) % 1234567;
             }
-            int temp = array[0];
-            array[0] = (array[1]) % 1234567;
-            array[1] = (temp + array[1]) % 1234567;
         }
-        answer = (array[0] + array[1]) % 1234567;
+
+        answer = array[n];
+
+        //then
+        assertThat(answer).isEqualTo(expect);
+    }
+
+    @Test
+    @DisplayName("다음 큰 숫자")
+    void solution999() {
+        //given
+        int n = 15;
+        int expect = 23, answer = 0;
+
+        //when
+        int oneCountByN = Integer.toBinaryString(n).replace("0", "").length();
+        while (true) {
+            int value = Integer.toBinaryString(++n).replace("0", "").length();
+
+            if (value == oneCountByN) {
+                answer = n;
+                break;
+            }
+
+        }
 
         //then
         assertThat(answer).isEqualTo(expect);
