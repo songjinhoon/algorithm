@@ -570,4 +570,68 @@ public class TestStepTwo {
         assertThat(answer).isEqualTo(expect);
     }
 
+    @Test
+    @DisplayName("[1차] 캐시")
+    void solution17() {
+        //given
+        String[] cities = {"Jeju", "Pangyo", "Seoul", "NewYork", "LA", "Jeju", "Pangyo", "Seoul", "NewYork", "LA"};
+        int cacheSize = 3;
+        int hit = 1, miss = 5;
+        int answer = 0, expect = 50;
+
+        //when
+        List<String> storage = new ArrayList<>();
+        for (String city : cities) {
+            city = city.toLowerCase();
+            if (storage.contains(city)) {
+                storage.remove(city);
+                storage.add(city);
+                answer += hit;
+            } else {
+                if (storage.size() == cacheSize) {
+                    storage.remove(0);
+                }
+                storage.add(city);
+                answer += miss;
+            }
+        }
+
+        //then
+        assertThat(answer).isEqualTo(expect);
+    }
+
+    @Test
+    @DisplayName("행렬의 곱셈")
+    void solution18() {
+        //given
+        int[][] arr1 = {
+                {1, 4},
+                {3, 2},
+                {4, 1}
+        };
+        int[][] arr2 = {
+                {3, 3},
+                {3, 3},
+        };
+        int[][] expect = {
+                {15, 15}, // {1*3 + 4*3, 1*3 + 4*3}
+                {15, 15}, // {3*3 + 3*2, 3*3 + 2*3}
+                {15, 15}
+        };
+        int[][] answer = new int[arr1.length][arr2[0].length];
+
+        //when
+        for (int i = 0; i < arr1.length; i++) {
+            for (int j = 0; j < arr2[0].length; j++) {
+                for (int k = 0; k < arr1[0].length; k++) {
+                    answer[i][j] += arr1[i][k] * arr2[k][j];
+                }
+            }
+        }
+
+        //then
+        assertThat(answer).isEqualTo(expect);
+    }
+
+
 }
